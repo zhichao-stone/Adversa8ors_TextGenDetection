@@ -9,7 +9,7 @@ class EnsembleDetector:
     def __init__(self, 
         module1: Binoculars, 
         module2: MPUDetector, 
-        alpha: float = 0.912
+        alpha: float = 0.655
     ) -> None:
         self.alpha = alpha
         self.module1 = module1
