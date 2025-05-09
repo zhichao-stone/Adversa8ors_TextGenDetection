@@ -54,20 +54,21 @@ class MPUDetector:
         en_batches, zh_batches = [], []
         for i, t in enumerate(batch):
             zh_chars = re.findall(r"[\u4e00-\u9fff！，。；“”？、]", t)
-            if len(zh_chars) / len(t) >= 0.35:
+            if len(zh_chars) / len(t) >= 0.4:
                 zh_indices.append(i)
                 zh_batches.append(t)
             else:
                 en_indices.append(i)
-                en_indices.append(t)
+                en_batches.append(t)
         
-        scores = np.zeros(len(batch))
-        if en_batches:
-            en_scores = self.en_model.predict(en_batches)
-            scores[en_indices] = en_scores
-        if zh_batches:
-            zh_scores = self.zh_model.predict(zh_batches)
-            scores[zh_indices] = zh_scores
+        with torch.no_grad():
+            scores = np.zeros(len(batch))
+            if en_batches:
+                en_scores = self.en_model.predict(en_batches)
+                scores[en_indices] = en_scores
+            if zh_batches:
+                zh_scores = self.zh_model.predict(zh_batches)
+                scores[zh_indices] = zh_scores
 
         scores = scores.tolist()
         return scores

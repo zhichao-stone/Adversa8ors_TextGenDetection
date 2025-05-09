@@ -17,7 +17,7 @@ def perplexity(
 
     ppl: torch.Tensor = (F.cross_entropy(shifted_logits.transpose(1, 2), shifted_labels, reduction="none") * shifted_attention_mask).sum(1) / shifted_attention_mask.sum(1)
 
-    return ppl.cpu().float().numpy()
+    return ppl.detach().cpu().float().numpy()
 
 
 def entropy(
@@ -38,7 +38,7 @@ def entropy(
     padding_mask = (encoding.input_ids != pad_token_id).type(torch.uint8)
     agg_ce: torch.Tensor = (ce * padding_mask).sum(1) / padding_mask.sum(1)
 
-    return agg_ce.cpu().float().numpy()
+    return agg_ce.detach().cpu().float().numpy()
 
 
 class LLMClient:
@@ -114,21 +114,22 @@ class Binoculars:
     def compute_score(self, text: Union[str, List[str]]) -> List[float]:
         batch = [text] if isinstance(text, str) else text
 
-        encodings = self.tokenizer(
-            batch, 
-            return_tensors="pt",
-            padding="longest" if len(batch) > 1 else False,
-            truncation=True,
-            max_length=self.max_len,
-        )
+        with torch.no_grad():
+            encodings = self.tokenizer(
+                batch, 
+                return_tensors="pt",
+                padding="longest" if len(batch) > 1 else False,
+                truncation=True,
+                max_length=self.max_len,
+            )
 
-        observer_logits: torch.Tensor = self.observer(**encodings.to(self.device1)).logits
-        performer_logits: torch.Tensor = self.performer(**encodings.to(self.device2)).logits
-        if self.device1 != "cpu":
-            torch.cuda.synchronize()
+            observer_logits: torch.Tensor = self.observer(**encodings.to(self.device1)).logits
+            performer_logits: torch.Tensor = self.performer(**encodings.to(self.device2)).logits
+            if self.device1 != "cpu":
+                torch.cuda.synchronize()
 
-        ppl = perplexity(encodings, performer_logits)
-        xppl = entropy(observer_logits.to(self.device1), performer_logits.to(self.device1), encodings.to(self.device1), self.tokenizer.pad_token_id)
+            ppl = perplexity(encodings, performer_logits)
+            xppl = entropy(observer_logits.to(self.device1), performer_logits.to(self.device1), encodings.to(self.device1), self.tokenizer.pad_token_id)
 
         scores: np.ndarray = ppl / (xppl + 1e-4)
         scores = self.adjust_scores(scores)
