@@ -128,7 +128,7 @@ class Binoculars:
             if self.device1 != "cpu":
                 torch.cuda.synchronize()
 
-            ppl = perplexity(encodings, performer_logits)
+            ppl = perplexity(encodings.to(self.device1), observer_logits.to(self.device1))
             xppl = entropy(observer_logits.to(self.device1), performer_logits.to(self.device1), encodings.to(self.device1), self.tokenizer.pad_token_id)
 
         scores: np.ndarray = ppl / (xppl + 1e-4)
