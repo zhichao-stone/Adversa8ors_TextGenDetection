@@ -12,6 +12,26 @@ def get_args():
     parser.add_argument("--batch_size", type=int, default=32)
     args = parser.parse_args()
     return args
+    
+
+def get_train_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train_data", type=str, help="file path of data for training")
+    parser.add_argument("--valid_data", type=str, help="file path of data for validation")
+    parser.add_argument("--model", type=str, default="roberta-base")
+    parser.add_argument("--epoch", type=int, default=1)
+    parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--max_length", type=int, default=512)
+    parser.add_argument("--lr", type=float, default=5e-5)
+    parser.add_argument("--wd", type=float, default=0.0)
+    parser.add_argument("--aug_min_len", type=int, default=1)
+    parser.add_argument("--aug_ratio", type=float, default=0.2)
+    parser.add_argument("--lamb", type=float, default=0.4)
+    parser.add_argument("--pi", type=float, default=0.2)
+    parser.add_argument("--len_threshold", type=int, default=55, help="length threshold for regarding text as short text.")
+    parser.add_argument("--save_dir", type=str, default="save_model")
+    args = parser.parse_args()
+    return args
 
 
 def get_dataset(args):
