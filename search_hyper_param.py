@@ -43,6 +43,7 @@ def data_augment(
             aug_t = multi_scale_augment(t, aug_mode="word", aug_ratio=0.05)
         else:
             aug_t = multi_scale_augment(t, aug_mode="word", aug_ratio=0.15)
+        ts.append(aug_t)
         if random.uniform(0, 1) < 1e-4:
             ps.append(p)
             ts.append("".join([random.choice(" -@#a7=+!?~/.,") for _ in range(random.randint(1, 15))]))
