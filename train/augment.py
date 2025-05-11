@@ -12,7 +12,7 @@ def multi_scale_augment(
     min_len: int = 50, 
     aug_mode: str = "sentence", 
     aug_ratio: float = 0.25, 
-):
+) -> str:
     aug_text = ""
 
     if len(text) < min_len:

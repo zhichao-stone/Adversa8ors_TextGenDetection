@@ -52,7 +52,7 @@ def run_prediction(dataset: pd.DataFrame, batch_size: int = 32):
 
 if __name__ == "__main__":
     args = get_args()
-    dataset = get_dataset(args)
+    dataset = get_dataset(args.data)
     results = run_prediction(dataset, batch_size=args.batch_size)
     
     # Save results

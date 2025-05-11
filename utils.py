@@ -34,12 +34,12 @@ def get_train_args():
     return args
 
 
-def get_dataset(args):
-    print(f"Loading dataset from {args.data}...")
-    data = pd.read_csv(args.data)
+def get_dataset(data_path: str, columns: List[str] = ["prompt", "text"]):
+    print(f"Loading dataset from {data_path}...")
+    data = pd.read_csv(data_path)
 
     # New format: prompt, text
-    dataset = data[["prompt", "text"]].dropna().copy()
+    dataset = data[columns].dropna().copy()
     
     return dataset
 
