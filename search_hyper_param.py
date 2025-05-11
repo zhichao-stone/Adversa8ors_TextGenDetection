@@ -29,7 +29,8 @@ def data_augment(
     labels: List[int], 
 ) -> Tuple[List[str], List[str], List[int]]:
     new_prompts, new_texts, new_labels = [], [], []
-    for p, t, l in zip(prompts, texts, labels):
+    for i in tqdm(range(len(prompts)), desc="augment"):
+        p, t, l = prompts[i], texts[i], labels[i]
         ps, ts, ls = [p, p, p], [t], [l, l, l]
         # augment--sentence
         if l == 1:
