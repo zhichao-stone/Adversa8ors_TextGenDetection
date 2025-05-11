@@ -162,4 +162,4 @@ if __name__ == "__main__":
         "f1": {"best": best_f1, "beta": best_f1_beta}, 
     }
     with open("./results/best_hyper_params.json", "r", encoding="utf-8") as fw:
-        json.dump({})
+        json.dump(hyperparam_results, fw, ensure_ascii=False, indent=4)
