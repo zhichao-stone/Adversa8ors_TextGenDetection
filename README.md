@@ -29,6 +29,8 @@ CUDA_VISIBLE_DEVICES=0,1 python prediction.py \
 	--batch_size 32
 ```
 
+The trained weight of MPU can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1jpNtZs4jEGYNr0BTZO_A_TCaIsEskDQZ).
+
 #### 2.2 Evaluate
 
 ```shell
